@@ -94,3 +94,35 @@ void bright(FILE *src, FILE *dst) {
 	fclose(dst);
 	free(imageData);
 }
+
+void black_white(FILE *src, FILE *dst) {
+	unsigned char header[54];
+	unsigned char colorTable[1024];
+
+	fread(header, sizeof(unsigned char), 54, src);
+
+	int width = *(int*)&header[18];
+	int height = *(int*)&header[22];
+	int bitDepth = *(int*)&header[28];
+	int imageSize = width * height;
+
+	if (bitDepth <= 8)
+		fread(colorTable, sizeof(unsigned char), 1024, src);
+
+	unsigned char *imageData = malloc(imageSize * sizeof(unsigned char));
+	if (!imageData) error(2);
+
+	fread(imageData, sizeof(unsigned char), imageSize, src);
+
+	for (int i = 0; i < imageSize; i++)
+		imageData[i] = imageData[i] >(MAX_COLOR - MIN_COLOR) / 2 ? MAX_COLOR : MIN_COLOR;
+
+	fwrite(header, sizeof(unsigned char), 54, dst);
+	if (bitDepth <= 8)
+		fwrite(colorTable, sizeof(unsigned char), 1024, dst);
+	fwrite(imageData, sizeof(unsigned char), imageSize, dst);
+
+	fclose(src);
+	fclose(dst);
+	free(imageData);
+}
