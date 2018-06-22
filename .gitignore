@@ -1,0 +1,10 @@
+# Ignore everything
+*
+
+# Don't ignore folders
+!*/
+
+# Don't ignore .gitignore, *.c files and .bmp files
+!.gitignore
+!*.c
+!*.bmp
