@@ -1,26 +1,26 @@
 #include "image.h"
 
 void copy(FILE *src, FILE *dst) {
-	unsigned char header[54];	// to store the image header
-	unsigned char colorTable[1024];	// to store the colorTable, if it exists.
+	unsigned char header[HEADER_LENGTH];	// to store the image header
+	unsigned char colorTable[COLOR_TABLE_LENGTH];	// to store the colorTable, if it exists.
 
-	fread(header, sizeof(unsigned char), 54, src);	// header
+	fread(header, sizeof(unsigned char), HEADER_LENGTH, src);	// header
 
 	int width = *(int*)&header[18];	// read the width from the image header
 	int height = *(int*)&header[22];	// read the height from the image header
 	int bitDepth = *(int*)&header[28];	// read the bitDepth from the image header
 
 	if (bitDepth <= 8)
-		fread(colorTable, sizeof(unsigned char), 1024, src);	// color table
+		fread(colorTable, sizeof(unsigned char), COLOR_TABLE_LENGTH, src);	// color table
 
 	unsigned char *buff = malloc(width * height * sizeof(unsigned char));
 	if (!buff) error(2);
 
 	fread(buff, sizeof(unsigned char), height * width, src);	// image data
 
-	fwrite(header, sizeof(unsigned char), 54, dst); // write the image header to output file
+	fwrite(header, sizeof(unsigned char), HEADER_LENGTH, dst); // write the image header to output file
 	if (bitDepth <= 8)
-		fwrite(colorTable, sizeof(unsigned char), 1024, dst);
+		fwrite(colorTable, sizeof(unsigned char), COLOR_TABLE_LENGTH, dst);
 	fwrite(buff, sizeof(unsigned char), height * width, dst);
 
 	fclose(src);
@@ -29,10 +29,10 @@ void copy(FILE *src, FILE *dst) {
 }
 
 void negative(FILE *src, FILE *dst) {
-	unsigned char header[54];
-	unsigned char colorTable[1024];
+	unsigned char header[HEADER_LENGTH];
+	unsigned char colorTable[COLOR_TABLE_LENGTH];
 
-	fread(header, sizeof(unsigned char), 54, src);
+	fread(header, sizeof(unsigned char), HEADER_LENGTH, src);
 
 	int width = *(int*)&header[18];
 	int height = *(int*)&header[22];
@@ -40,7 +40,7 @@ void negative(FILE *src, FILE *dst) {
 	int imageSize = width * height;
 
 	if (bitDepth <= 8)
-		fread(colorTable, sizeof(unsigned char), 1024, src);
+		fread(colorTable, sizeof(unsigned char), COLOR_TABLE_LENGTH, src);
 
 	unsigned char *imageData = malloc(imageSize * sizeof(unsigned char));
 	unsigned char *newImageData = malloc(imageSize * sizeof(unsigned char));
@@ -52,9 +52,9 @@ void negative(FILE *src, FILE *dst) {
 		for (int j = 0; j < width; j++)
 			newImageData[i * width + j] = MAX_COLOR - imageData[i * width + j];
 
-	fwrite(header, sizeof(unsigned char), 54, dst);
+	fwrite(header, sizeof(unsigned char), HEADER_LENGTH, dst);
 	if (bitDepth <= 8)
-		fwrite(colorTable, sizeof(unsigned char), 1024, dst);
+		fwrite(colorTable, sizeof(unsigned char), COLOR_TABLE_LENGTH, dst);
 	fwrite(newImageData, sizeof(unsigned char), imageSize, dst);
 
 	fclose(src);
@@ -64,10 +64,10 @@ void negative(FILE *src, FILE *dst) {
 }
 
 void bright(FILE *src, FILE *dst) {
-	unsigned char header[54];
-	unsigned char colorTable[1024];
+	unsigned char header[HEADER_LENGTH];
+	unsigned char colorTable[COLOR_TABLE_LENGTH];
 
-	fread(header, sizeof(unsigned char), 54, src);
+	fread(header, sizeof(unsigned char), HEADER_LENGTH, src);
 
 	int width = *(int*)&header[18];
 	int height = *(int*)&header[22];
@@ -75,7 +75,7 @@ void bright(FILE *src, FILE *dst) {
 	int imageSize = width * height;
 
 	if (bitDepth <= 8)
-		fread(colorTable, sizeof(unsigned char), 1024, src);
+		fread(colorTable, sizeof(unsigned char), COLOR_TABLE_LENGTH, src);
 
 	unsigned char *imageData = malloc(imageSize * sizeof(unsigned char));
 	if (!imageData) error(2);
@@ -85,9 +85,9 @@ void bright(FILE *src, FILE *dst) {
 	for (int i = 0; i < imageSize; i++)
 		imageData[i] = MIN(MAX_COLOR, imageData[i] + BRIGHTNESS_FACTOR);
 
-	fwrite(header, sizeof(unsigned char), 54, dst);
+	fwrite(header, sizeof(unsigned char), HEADER_LENGTH, dst);
 	if (bitDepth <= 8)
-		fwrite(colorTable, sizeof(unsigned char), 1024, dst);
+		fwrite(colorTable, sizeof(unsigned char), COLOR_TABLE_LENGTH, dst);
 	fwrite(imageData, sizeof(unsigned char), imageSize, dst);
 
 	fclose(src);
@@ -96,10 +96,10 @@ void bright(FILE *src, FILE *dst) {
 }
 
 void black_white(FILE *src, FILE *dst) {
-	unsigned char header[54];
-	unsigned char colorTable[1024];
+	unsigned char header[HEADER_LENGTH];
+	unsigned char colorTable[COLOR_TABLE_LENGTH];
 
-	fread(header, sizeof(unsigned char), 54, src);
+	fread(header, sizeof(unsigned char), HEADER_LENGTH, src);
 
 	int width = *(int*)&header[18];
 	int height = *(int*)&header[22];
@@ -107,7 +107,7 @@ void black_white(FILE *src, FILE *dst) {
 	int imageSize = width * height;
 
 	if (bitDepth <= 8)
-		fread(colorTable, sizeof(unsigned char), 1024, src);
+		fread(colorTable, sizeof(unsigned char), COLOR_TABLE_LENGTH, src);
 
 	unsigned char *imageData = malloc(imageSize * sizeof(unsigned char));
 	if (!imageData) error(2);
@@ -117,9 +117,9 @@ void black_white(FILE *src, FILE *dst) {
 	for (int i = 0; i < imageSize; i++)
 		imageData[i] = imageData[i] > (MAX_COLOR - MIN_COLOR) / 2 ? MAX_COLOR : MIN_COLOR;
 
-	fwrite(header, sizeof(unsigned char), 54, dst);
+	fwrite(header, sizeof(unsigned char), HEADER_LENGTH, dst);
 	if (bitDepth <= 8)
-		fwrite(colorTable, sizeof(unsigned char), 1024, dst);
+		fwrite(colorTable, sizeof(unsigned char), COLOR_TABLE_LENGTH, dst);
 	fwrite(imageData, sizeof(unsigned char), imageSize, dst);
 
 	fclose(src);
@@ -128,12 +128,10 @@ void black_white(FILE *src, FILE *dst) {
 }
 
 void blur(FILE *src, FILE *dst) {
-	//extern const double filter[FILTER_HEIGHT][FILTER_WIDTH];
+	unsigned char header[HEADER_LENGTH];
+	unsigned char colorTable[COLOR_TABLE_LENGTH];
 
-	unsigned char header[54];
-	unsigned char colorTable[1024];
-
-	fread(header, sizeof(unsigned char), 54, src);
+	fread(header, sizeof(unsigned char), HEADER_LENGTH, src);
 
 	int width = *(int*)&header[18];
 	int height = *(int*)&header[22];
@@ -141,7 +139,7 @@ void blur(FILE *src, FILE *dst) {
 	int imageSize = width * height;
 
 	if (bitDepth <= 8)
-		fread(colorTable, sizeof(unsigned char), 1024, src);
+		fread(colorTable, sizeof(unsigned char), COLOR_TABLE_LENGTH, src);
 
 	unsigned char *imageData = malloc(imageSize * sizeof(unsigned char));
 	unsigned char *newImageData = malloc(imageSize * sizeof(unsigned char));
@@ -175,12 +173,51 @@ void blur(FILE *src, FILE *dst) {
 	}
 
 
-	fwrite(header, sizeof(unsigned char), 54, dst);
+	fwrite(header, sizeof(unsigned char), HEADER_LENGTH, dst);
 	if (bitDepth <= 8)
-		fwrite(colorTable, sizeof(unsigned char), 1024, dst);
+		fwrite(colorTable, sizeof(unsigned char), COLOR_TABLE_LENGTH, dst);
 	fwrite(newImageData, sizeof(unsigned char), imageSize, dst);
 
 	fclose(src);
 	fclose(dst);
 	free(imageData);
+}
+
+void rgb2sepia(FILE *src, FILE *dst) {
+	unsigned char header[HEADER_LENGTH];
+	unsigned char colorTable[COLOR_TABLE_LENGTH];
+
+	fread(header, sizeof(unsigned char), HEADER_LENGTH, src);
+
+	int width = *(int*)&header[18];
+	int height = *(int*)&header[22];
+	int bitDepth = *(int*)&header[28];
+	int imageSize = width * height;
+
+	if (bitDepth <= 8)
+		fread(colorTable, sizeof(unsigned char), COLOR_TABLE_LENGTH, src);
+
+	fwrite(header, sizeof(unsigned char), HEADER_LENGTH, dst);
+	if (bitDepth <= 8)
+		fwrite(colorTable, sizeof(unsigned char), COLOR_TABLE_LENGTH, dst);
+
+
+	unsigned char buffer[3], r, g, b;
+	for (int i = 0; i < imageSize; i++) {
+		buffer[2] = getc(src);	// blue
+		buffer[1] = getc(src);	// green
+		buffer[0] = getc(src);	// red
+
+		// conversion formula of rgb to sepia
+		r = MIN((buffer[0] * 0.393) + (buffer[1] * 0.769) + (buffer[2] * 0.189), MAX_COLOR);
+		g = MIN((buffer[0] * 0.349) + (buffer[1] * 0.686) + (buffer[2] * 0.168), MAX_COLOR);
+		b = MIN((buffer[0] * 0.272) + (buffer[1] * 0.534) + (buffer[2] * 0.131), MAX_COLOR);
+
+		putc(b, dst);
+		putc(g, dst);
+		putc(r, dst);
+	}
+
+	fclose(src);
+	fclose(dst);
 }
