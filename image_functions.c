@@ -201,7 +201,6 @@ void rgb2sepia(FILE *src, FILE *dst) {
 	if (bitDepth <= 8)
 		fwrite(colorTable, sizeof(unsigned char), COLOR_TABLE_LENGTH, dst);
 
-
 	unsigned char buffer[3], r, g, b;
 	for (int i = 0; i < imageSize; i++) {
 		buffer[2] = getc(src);	// blue
@@ -216,6 +215,42 @@ void rgb2sepia(FILE *src, FILE *dst) {
 		putc(b, dst);
 		putc(g, dst);
 		putc(r, dst);
+	}
+
+	fclose(src);
+	fclose(dst);
+}
+
+void rgb2gray(FILE *src, FILE *dst) {
+	unsigned char header[HEADER_LENGTH];
+	unsigned char colorTable[COLOR_TABLE_LENGTH];
+
+	fread(header, sizeof(unsigned char), HEADER_LENGTH, src);
+
+	int width = *(int*)&header[18];
+	int height = *(int*)&header[22];
+	int bitDepth = *(int*)&header[28];
+	int imageSize = width * height;
+
+	if (bitDepth <= 8)
+		fread(colorTable, sizeof(unsigned char), COLOR_TABLE_LENGTH, src);
+
+	fwrite(header, sizeof(unsigned char), HEADER_LENGTH, dst);
+	if (bitDepth <= 8)
+		fwrite(colorTable, sizeof(unsigned char), COLOR_TABLE_LENGTH, dst);
+
+	unsigned char buffer[3], y;
+	for (int i = 0; i < imageSize; i++) {
+		buffer[2] = getc(src);	// blue
+		buffer[1] = getc(src);	// green
+		buffer[0] = getc(src);	// red
+
+		// conversion formula of rgb to gray
+		y = MIN((buffer[0] * 0.3) + (buffer[1] * 0.59) + (buffer[2] * 0.11), MAX_COLOR);
+
+		putc(y, dst);
+		putc(y, dst);
+		putc(y, dst);
 	}
 
 	fclose(src);
