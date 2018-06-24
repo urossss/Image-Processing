@@ -256,3 +256,38 @@ void rgb2gray(FILE *src, FILE *dst) {
 	fclose(src);
 	fclose(dst);
 }
+
+void resize(FILE *src, FILE *dst) {
+	unsigned char header[HEADER_LENGTH];	// to store the image header
+	unsigned char colorTable[COLOR_TABLE_LENGTH];	// to store the colorTable, if it exists.
+
+	fread(header, sizeof(unsigned char), HEADER_LENGTH, src);	// header
+
+	int width = *(int*)&header[18];	// read the width from the image header
+	int height = *(int*)&header[22];	// read the height from the image header
+	int bitDepth = *(int*)&header[28];	// read the bitDepth from the image header
+
+	if (bitDepth <= 8)
+		fread(colorTable, sizeof(unsigned char), COLOR_TABLE_LENGTH, src);	// color table
+
+	unsigned char *buff = malloc(width * height * sizeof(unsigned char));
+	if (!buff) error(2);
+
+	fread(buff, sizeof(unsigned char), height * width, src);	// image data
+
+	int newWidth = 256, newHeight = 1024;
+	// scanf("%d%d", &newWidth, &newHeight);
+	if (newWidth * newHeight <= width * height) {
+		*(int*)&header[18] = newWidth;
+		*(int*)&header[22] = newHeight;
+	}
+
+	fwrite(header, sizeof(unsigned char), HEADER_LENGTH, dst); // write the image header to output file
+	if (bitDepth <= 8)
+		fwrite(colorTable, sizeof(unsigned char), COLOR_TABLE_LENGTH, dst);
+	fwrite(buff, sizeof(unsigned char), height * width, dst);
+
+	fclose(src);
+	fclose(dst);
+	free(buff);
+}
