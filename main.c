@@ -18,7 +18,8 @@ int main() {
 	//rgb2gray(in, out);
 	//resize(in, out);
 	//rotateRight(in, out);
-	rotate180(in, out);
+	//rotate180(in, out);
+	rotateLeft(in, out);
 
 	t2 = clock();
 	d = (double)(t2 - t1) / CLOCKS_PER_SEC * 1000;

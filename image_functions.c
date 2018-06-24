@@ -365,3 +365,41 @@ void rotate180(FILE *src, FILE *dst) {
 	fclose(dst);
 	free(imageData);
 }
+
+void rotateLeft(FILE *src, FILE *dst) {
+	unsigned char header[HEADER_LENGTH];
+	unsigned char colorTable[COLOR_TABLE_LENGTH];
+
+	fread(header, sizeof(unsigned char), HEADER_LENGTH, src);
+
+	int width = *(int*)&header[18];
+	int height = *(int*)&header[22];
+	int bitDepth = *(int*)&header[28];
+	int imageSize = width * height;
+
+	if (bitDepth <= 8)
+		fread(colorTable, sizeof(unsigned char), COLOR_TABLE_LENGTH, src);
+
+	unsigned char *imageData = malloc(imageSize * sizeof(unsigned char));
+	unsigned char *newImageData = malloc(imageSize * sizeof(unsigned char));
+	if (!imageData || !newImageData) error(2);
+
+	fread(imageData, sizeof(unsigned char), imageSize, src);
+
+	for (int i = 0; i < height; i++)
+		for (int j = 0; j < width; j++)
+			newImageData[j * height + height - i - 1] = imageData[width * i + j];
+
+	*(int*)&header[18] = height;
+	*(int*)&header[22] = width;
+
+	fwrite(header, sizeof(unsigned char), HEADER_LENGTH, dst);
+	if (bitDepth <= 8)
+		fwrite(colorTable, sizeof(unsigned char), COLOR_TABLE_LENGTH, dst);
+	fwrite(newImageData, sizeof(unsigned char), imageSize, dst);
+
+	fclose(src);
+	fclose(dst);
+	free(imageData);
+	free(newImageData);
+}
