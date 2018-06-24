@@ -5,8 +5,8 @@ int main() {
 	double d;
 	int i;
 
-	FILE *in = fopen("images/lena512.bmp", "rb");
-	FILE *out = fopen("images/lena_rotate.bmp", "wb");
+	FILE *in = fopen("images/lena_color.bmp", "rb");
+	FILE *out = fopen("images/lena_blurRGB.bmp", "wb");
 	if (!in || !out) error(1);
 
 	//copy(in, out);
@@ -19,7 +19,8 @@ int main() {
 	//resize(in, out);
 	//rotateRight(in, out);
 	//rotate180(in, out);
-	rotateLeft(in, out);
+	//rotateLeft(in, out);
+	blurRGB(in, out);
 
 	t2 = clock();
 	d = (double)(t2 - t1) / CLOCKS_PER_SEC * 1000;
