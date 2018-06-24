@@ -4,7 +4,8 @@
 # Don't ignore folders
 !*/
 
-# Don't ignore .gitignore, *.c files and .bmp files
+# Don't ignore .gitignore, *.c files, *.h and .bmp files
 !.gitignore
 !*.c
+!*.h
 !*.bmp
