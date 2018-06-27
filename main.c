@@ -22,12 +22,23 @@ int main() {
 	//rotateLeft(in, out);
 	blurRGB(in, out);*/
 
+	Image *lena = loadImage("images/lena512.bmp");
+	Image *color = loadImage("images/lena_color.bmp");
 	Image *img1 = loadImage("test/photo1.bmp");
 	Image *img2 = loadImage("test/photo2.bmp");
 	Image *img3 = loadImage("test/photo3.bmp");
+	Image *tour = loadImage("test/tour.bmp");
 
-	Image *img = add(img1, img2);
-	exportImage(img, "test/add12.bmp");
+	//exportImage(copy(tour), "test/tour_copy.bmp");
+	//exportImage(negative(tour), "test/tour_negative.bmp");
+	//exportImage(copy(img3), "test/photo3_copy.bmp");
+
+	//exportImage(copy(lena), "test/copy1.bmp");
+	//exportImage(copy(color), "test/copy2.bmp");
+	
+	//exportImage(negative(lena), "test/negative_lena.bmp");
+	
+	//exportImage(add(img2, img3), "test/add23.bmp");
 
 	t2 = clock();
 	d = (double)(t2 - t1) / CLOCKS_PER_SEC * 1000;

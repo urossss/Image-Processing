@@ -36,7 +36,19 @@ Image* loadImage(char name[]) {
 
 	fread(i->data, sizeof(unsigned char), i->size, in);
 
-	fread(i->footer, sizeof(unsigned char), FOOTER_LENGTH, in);
+	/*
+		Razliciti alati za konverziju u .bmp format dodaju razlicite footere na kraj fajla koji nam nisu bitni za obradu,
+		ali moraju postojati i u izlaznom fajlu da bi format bio ispravan. Kako je duzina footera nepoznata, citamo znak
+		po znak do kraja fajla i vrsimo potrebnu realokaciju dinamicke memorije.
+	*/
+	i->footerLength = 0;
+	i->footer = NULL;
+	int c;
+	while ((c = getc(in)) != EOF) {
+		i->footer = realloc(i->footer, (i->footerLength + 1) * sizeof(unsigned char));
+		if (!i->footer) error(2);
+		i->footer[i->footerLength++] = c;
+	}
 
 	fclose(in);
 	return i;
@@ -49,6 +61,6 @@ void exportImage(Image *i, char name[]) {
 	if (i->bitDepth <= 8)
 		fwrite(i->colorTable, sizeof(unsigned char), COLOR_TABLE_LENGTH, out);
 	fwrite(i->data, sizeof(unsigned char), i->size, out);
-	fwrite(i->footer, sizeof(unsigned char), FOOTER_LENGTH, out);
+	fwrite(i->footer, sizeof(unsigned char), i->footerLength, out);
 	fclose(out);
 }
