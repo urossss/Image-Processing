@@ -447,7 +447,7 @@ void blurRGB_old(FILE *src, FILE *dst) {
 			for (y = 0; y < width; y++) {
 				sr = sg = sb = 0;
 				for (filterX = 0; filterX < FILTER_HEIGHT; filterX++)
-					for (int filterY = 0; filterY < FILTER_WIDTH; filterY++) {
+					for (filterY = 0; filterY < FILTER_WIDTH; filterY++) {
 						int imageX = (x - FILTER_HEIGHT / 2 + filterX + height) % height;
 						int imageY = (y - FILTER_WIDTH / 2 + filterY + width) % width;
 						sr += imageData[3 * (imageX * width + imageY) + 0] * filter[filterX][filterY];

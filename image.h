@@ -31,8 +31,8 @@ typedef struct {
 
 /* helper functions */
 void error(int);
-Image loadImage(char[]);
-void exportImage(Image, char[]);
+Image *loadImage(char[]);
+void exportImage(Image *, char[]);
 
 /* image functions - old version */
 void copy_old(FILE *, FILE *);
@@ -48,7 +48,10 @@ void rotate180_old(FILE *, FILE *);
 void rotateLeft_old(FILE *, FILE *);
 void blurRGB_old(FILE *, FILE *);
 
+/* image functions */
+Image copy(Image);
+
 /* image arithmetic */
-Image* add(Image, Image);
+Image* add(Image *, Image *);
 
 #endif
