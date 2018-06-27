@@ -8,6 +8,7 @@
 
 #define HEADER_LENGTH 54
 #define COLOR_TABLE_LENGTH 1024
+#define FOOTER_LENGTH 84
 
 #define MIN_COLOR 0
 #define MAX_COLOR 255
@@ -20,8 +21,20 @@
 #define MAX(a, b) (a) > (b) ? (a) : (b)
 #define MIN(a, b) (a) < (b) ? (a) : (b)
 
-/* functions */
+typedef struct {
+	unsigned char header[HEADER_LENGTH];
+	unsigned char colorTable[COLOR_TABLE_LENGTH];
+	int width, height, bitDepth, size;
+	unsigned char *data;
+	unsigned char footer[84];
+} Image;
+
+/* helper functions */
 void error(int);
+Image loadImage(char[]);
+void exportImage(Image, char[]);
+
+/* image functions */
 void copy(FILE *, FILE *);
 void negative(FILE *, FILE *);
 void bright(FILE *, FILE *);
@@ -34,5 +47,8 @@ void rotateRight(FILE *, FILE *);
 void rotate180(FILE *, FILE *);
 void rotateLeft(FILE *, FILE *);
 void blurRGB(FILE *, FILE *);
+
+/* image arithmetic */
+Image* add(Image, Image);
 
 #endif
