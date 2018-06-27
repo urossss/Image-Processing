@@ -37,6 +37,7 @@ Image loadImage(char name[]) {
 
 	fread(i.footer, sizeof(unsigned char), FOOTER_LENGTH, in);
 
+	fclose(in);
 	return i;
 }
 

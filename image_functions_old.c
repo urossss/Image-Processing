@@ -1,6 +1,6 @@
 #include "image.h"
 
-void copy(FILE *src, FILE *dst) {
+void copy_old(FILE *src, FILE *dst) {
 	unsigned char header[HEADER_LENGTH];	// to store the image header
 	unsigned char colorTable[COLOR_TABLE_LENGTH];	// to store the colorTable, if it exists.
 
@@ -28,7 +28,7 @@ void copy(FILE *src, FILE *dst) {
 	free(buff);
 }
 
-void negative(FILE *src, FILE *dst) {
+void negative_old(FILE *src, FILE *dst) {
 	unsigned char header[HEADER_LENGTH];
 	unsigned char colorTable[COLOR_TABLE_LENGTH];
 
@@ -63,7 +63,7 @@ void negative(FILE *src, FILE *dst) {
 	free(newImageData);
 }
 
-void bright(FILE *src, FILE *dst) {
+void bright_old(FILE *src, FILE *dst) {
 	unsigned char header[HEADER_LENGTH];
 	unsigned char colorTable[COLOR_TABLE_LENGTH];
 
@@ -95,7 +95,7 @@ void bright(FILE *src, FILE *dst) {
 	free(imageData);
 }
 
-void black_white(FILE *src, FILE *dst) {
+void black_white_old(FILE *src, FILE *dst) {
 	unsigned char header[HEADER_LENGTH];
 	unsigned char colorTable[COLOR_TABLE_LENGTH];
 
@@ -127,7 +127,7 @@ void black_white(FILE *src, FILE *dst) {
 	free(imageData);
 }
 
-void blur(FILE *src, FILE *dst) {
+void blur_old(FILE *src, FILE *dst) {
 	unsigned char header[HEADER_LENGTH];
 	unsigned char colorTable[COLOR_TABLE_LENGTH];
 
@@ -183,7 +183,7 @@ void blur(FILE *src, FILE *dst) {
 	free(imageData);
 }
 
-void rgb2sepia(FILE *src, FILE *dst) {
+void rgb2sepia_old(FILE *src, FILE *dst) {
 	unsigned char header[HEADER_LENGTH];
 	unsigned char colorTable[COLOR_TABLE_LENGTH];
 
@@ -221,7 +221,7 @@ void rgb2sepia(FILE *src, FILE *dst) {
 	fclose(dst);
 }
 
-void rgb2gray(FILE *src, FILE *dst) {
+void rgb2gray_old(FILE *src, FILE *dst) {
 	unsigned char header[HEADER_LENGTH];
 	unsigned char colorTable[COLOR_TABLE_LENGTH];
 
@@ -257,7 +257,7 @@ void rgb2gray(FILE *src, FILE *dst) {
 	fclose(dst);
 }
 
-void resize(FILE *src, FILE *dst) {
+void resize_old(FILE *src, FILE *dst) {
 	unsigned char header[HEADER_LENGTH];	// to store the image header
 	unsigned char colorTable[COLOR_TABLE_LENGTH];	// to store the colorTable, if it exists.
 
@@ -292,7 +292,7 @@ void resize(FILE *src, FILE *dst) {
 	free(buff);
 }
 
-void rotateRight(FILE *src, FILE *dst) {
+void rotateRight_old(FILE *src, FILE *dst) {
 	unsigned char header[HEADER_LENGTH];
 	unsigned char colorTable[COLOR_TABLE_LENGTH];
 
@@ -330,7 +330,7 @@ void rotateRight(FILE *src, FILE *dst) {
 	free(newImageData);
 }
 
-void rotate180(FILE *src, FILE *dst) {
+void rotate180_old(FILE *src, FILE *dst) {
 	unsigned char header[HEADER_LENGTH];
 	unsigned char colorTable[COLOR_TABLE_LENGTH];
 
@@ -366,7 +366,7 @@ void rotate180(FILE *src, FILE *dst) {
 	free(imageData);
 }
 
-void rotateLeft(FILE *src, FILE *dst) {
+void rotateLeft_old(FILE *src, FILE *dst) {
 	unsigned char header[HEADER_LENGTH];
 	unsigned char colorTable[COLOR_TABLE_LENGTH];
 
@@ -404,7 +404,7 @@ void rotateLeft(FILE *src, FILE *dst) {
 	free(newImageData);
 }
 
-void blurRGB(FILE *src, FILE *dst) {
+void blurRGB_old(FILE *src, FILE *dst) {
 	unsigned char header[HEADER_LENGTH];
 	unsigned char colorTable[COLOR_TABLE_LENGTH];
 

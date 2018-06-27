@@ -34,19 +34,19 @@ void error(int);
 Image loadImage(char[]);
 void exportImage(Image, char[]);
 
-/* image functions */
-void copy(FILE *, FILE *);
-void negative(FILE *, FILE *);
-void bright(FILE *, FILE *);
-void black_white(FILE *, FILE *);
-void blur(FILE *, FILE *);
-void rgb2sepia(FILE *, FILE *);
-void rgb2gray(FILE *, FILE *);
-void resize(FILE *, FILE *);
-void rotateRight(FILE *, FILE *);
-void rotate180(FILE *, FILE *);
-void rotateLeft(FILE *, FILE *);
-void blurRGB(FILE *, FILE *);
+/* image functions - old version */
+void copy_old(FILE *, FILE *);
+void negative_old(FILE *, FILE *);
+void bright_old(FILE *, FILE *);
+void black_white_old(FILE *, FILE *);
+void blur_old(FILE *, FILE *);
+void rgb2sepia_old(FILE *, FILE *);
+void rgb2gray_old(FILE *, FILE *);
+void resize_old(FILE *, FILE *);
+void rotateRight_old(FILE *, FILE *);
+void rotate180_old(FILE *, FILE *);
+void rotateLeft_old(FILE *, FILE *);
+void blurRGB_old(FILE *, FILE *);
 
 /* image arithmetic */
 Image* add(Image, Image);
