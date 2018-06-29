@@ -206,3 +206,49 @@ Image *rotateRight(Image *img) {
 	rotate->height = img->width;
 	return rotate;
 }
+
+Image *resize(Image *img, int w, int h) {
+	Image *resize = copy(img, 0);
+
+	*(int*)&resize->header[18] = w;
+	*(int*)&resize->header[22] = h;
+	resize->width = w;
+	resize->height = h;
+	resize->size = w * h * resize->bitDepth / 8;
+	resize->data = realloc(resize->data, resize->size * sizeof(unsigned char));
+	if (!resize->data) error(2);
+
+	double fx = (double)img->width / w;
+	double fy = (double)img->height / h;
+	double dfx = 0.999999 * fx, dfy = 0.999999 * fy;	// da ne bismo ispali iz opsega
+	double dx, dy;	// za racunanje povrsine preklapanja piksela
+	double sx1, sx2, sy1, sy2;
+	int x, y;	// pozicija u resize->data
+	int i, j;	// pozicija u img->data
+	int i1, i2, j1, j2;
+	double c;
+	if (resize->bitDepth <= 8)
+		for (y = 0; y < h; y++) {
+			sy1 = y * fy;
+			sy2 = sy1 + dfy;
+			i1 = (int)sy1, i2 = (int)sy2;
+			for (x = 0; x < w; x++) {
+				sx1 = x * fx;
+				sx2 = sx1 + dfx;
+				j1 = (int)sx1, j2 = (int)sx2;
+				for (c = 0, i = i1, dy = i1 + 1 - sy1; i <= i2; i++) {
+					if (i == i2) dy = dy - (i + 1 - sy2);
+					for (j = j1, dx = j + 1 - sx1; j <= j2; j++) {
+						if (j == j2) dx = dx - (j + 1 - sx2);
+						c += dx * dy * img->data[i * img->width + j];
+						dx = 1;
+					}
+					dy = 1;
+				}
+				resize->data[y * w + x] = MIN((unsigned char)(c / (fx * fy)), MAX_COLOR);
+			}
+		}
+
+
+	return resize;
+}

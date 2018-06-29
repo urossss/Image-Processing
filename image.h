@@ -57,6 +57,7 @@ Image* gray(Image *);
 Image* rotate180(Image *);
 Image* rotateLeft(Image *);
 Image* rotateRight(Image *);
+Image* resize(Image *, int, int);
 
 /* image arithmetic */
 Image* add(Image *, Image *);
