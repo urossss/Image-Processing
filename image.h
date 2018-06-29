@@ -55,6 +55,8 @@ Image* blur(Image *);
 Image* sepia(Image *);
 Image* gray(Image *);
 Image* rotate180(Image *);
+Image* rotateLeft(Image *);
+Image* rotateRight(Image *);
 
 /* image arithmetic */
 Image* add(Image *, Image *);

@@ -166,3 +166,43 @@ Image *rotate180(Image *img) {
 		}
 	return rotate;
 }
+
+Image *rotateLeft(Image *img) {
+	Image *rotate = copy(img, 0);
+	if (rotate->bitDepth <= 8)
+		for (int i = 0; i < img->height; i++)
+			for (int j = 0; j < img->width; j++)
+				rotate->data[j * img->height + img->height - i - 1] = img->data[img->width * i + j];
+	else
+		for (int i = 0; i < img->height; i++)
+			for (int j = 0; j < img->width; j++) {
+				rotate->data[3 * (j * img->height + img->height - i - 1) + 0] = img->data[3 * (img->width * i + j) + 0];
+				rotate->data[3 * (j * img->height + img->height - i - 1) + 1] = img->data[3 * (img->width * i + j) + 1];
+				rotate->data[3 * (j * img->height + img->height - i - 1) + 2] = img->data[3 * (img->width * i + j) + 2];
+			}
+	*(int*)&rotate->header[18] = img->height;
+	*(int*)&rotate->header[22] = img->width;
+	rotate->width = img->height;
+	rotate->height = img->width;
+	return rotate;
+}
+
+Image *rotateRight(Image *img) {
+	Image *rotate = copy(img, 0);
+	if (rotate->bitDepth <= 8)
+		for (int i = 0; i < img->height; i++)
+			for (int j = 0; j < img->width; j++)
+				rotate->data[(img->width - j - 1) * img->height + i] = img->data[img->width * i + j];
+	else
+		for (int i = 0; i < img->height; i++)
+			for (int j = 0; j < img->width; j++) {
+				rotate->data[3 * ((img->width - j - 1) * img->height + i) + 0] = img->data[3 * (img->width * i + j) + 0];
+				rotate->data[3 * ((img->width - j - 1) * img->height + i) + 1] = img->data[3 * (img->width * i + j) + 1];
+				rotate->data[3 * ((img->width - j - 1) * img->height + i) + 2] = img->data[3 * (img->width * i + j) + 2];
+			}
+	*(int*)&rotate->header[18] = img->height;
+	*(int*)&rotate->header[22] = img->width;
+	rotate->width = img->height;
+	rotate->height = img->width;
+	return rotate;
+}
