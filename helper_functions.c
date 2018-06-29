@@ -25,12 +25,24 @@ Image* loadImage(char name[]) {
 	i->width = *(int*)&i->header[18];
 	i->height = *(int*)&i->header[22];
 	i->bitDepth = *(int*)&i->header[28];
+	i->offset = *(int*)&i->header[10];
+
 	i->size = i->width * i->height;
 
 	if (i->bitDepth <= 8)
 		fread(i->colorTable, sizeof(unsigned char), COLOR_TABLE_LENGTH, in);
 	else i->size *= i->bitDepth / 8;	// color
-	
+
+	i->gap1Length = 0;
+	i->gap1 = NULL;
+	int c;
+	while (ftell(in) < i->offset) {
+		c = getc(in);
+		i->gap1 = realloc(i->gap1, (i->gap1Length + 1) * sizeof(unsigned char));
+		if (!i->gap1) error(2);
+		i->gap1[i->gap1Length++] = c;
+	}
+
 	i->data = malloc(i->size * sizeof(unsigned char));
 	if (!i->data) error(2);
 
@@ -41,13 +53,12 @@ Image* loadImage(char name[]) {
 		ali moraju postojati i u izlaznom fajlu da bi format bio ispravan. Kako je duzina footera nepoznata, citamo znak
 		po znak do kraja fajla i vrsimo potrebnu realokaciju dinamicke memorije.
 	*/
-	i->footerLength = 0;
-	i->footer = NULL;
-	int c;
+	i->gap2Length = 0;
+	i->gap2 = NULL;
 	while ((c = getc(in)) != EOF) {
-		i->footer = realloc(i->footer, (i->footerLength + 1) * sizeof(unsigned char));
-		if (!i->footer) error(2);
-		i->footer[i->footerLength++] = c;
+		i->gap2 = realloc(i->gap2, (i->gap2Length + 1) * sizeof(unsigned char));
+		if (!i->gap2) error(2);
+		i->gap2[i->gap2Length++] = c;
 	}
 
 	fclose(in);
@@ -60,7 +71,10 @@ void exportImage(Image *i, char name[]) {
 	fwrite(i->header, sizeof(unsigned char), HEADER_LENGTH, out);
 	if (i->bitDepth <= 8)
 		fwrite(i->colorTable, sizeof(unsigned char), COLOR_TABLE_LENGTH, out);
+	if (i->gap1Length)
+		fwrite(i->gap1, sizeof(unsigned char), i->gap1Length, out);
 	fwrite(i->data, sizeof(unsigned char), i->size, out);
-	fwrite(i->footer, sizeof(unsigned char), i->footerLength, out);
+	if (i->gap2Length)
+		fwrite(i->gap2, sizeof(unsigned char), i->gap2Length, out);
 	fclose(out);
 }

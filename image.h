@@ -23,9 +23,8 @@
 typedef struct {
 	unsigned char header[HEADER_LENGTH];
 	unsigned char colorTable[COLOR_TABLE_LENGTH];
-	int width, height, bitDepth, size, footerLength;
-	unsigned char *data;
-	unsigned char *footer;
+	int width, height, bitDepth, size, offset, gap1Length, gap2Length;
+	unsigned char *data, *gap1, *gap2;
 } Image;
 
 /* helper functions */
@@ -48,8 +47,14 @@ void rotateLeft_old(FILE *, FILE *);
 void blurRGB_old(FILE *, FILE *);
 
 /* image functions */
-Image* copy(Image *);
+Image* copy(Image *, int);
 Image* negative(Image *);
+Image* bright(Image *);
+Image* black_white(Image *);
+Image* blur(Image *);
+Image* sepia(Image *);
+Image* gray(Image *);
+Image* rotate180(Image *);
 
 /* image arithmetic */
 Image* add(Image *, Image *);
