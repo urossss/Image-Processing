@@ -58,5 +58,6 @@ Image* rotate180(Image *);
 
 /* image arithmetic */
 Image* add(Image *, Image *);
+Image* sub(Image *, Image *);
 
 #endif
