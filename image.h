@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include <time.h>
 
 #define HEADER_LENGTH 54
@@ -63,5 +64,14 @@ Image* resize(Image *, int, int);
 Image* add(Image *, Image *);
 Image* sub(Image *, Image *);
 Image* diff(Image *, Image *);
+Image* mul(Image *, Image *);
+Image* average(Image *, Image *);
+Image* cross_fade(Image *, Image *, double);
+Image* minimum(Image *, Image *);
+Image* maximum(Image *, Image *);
+Image* amplitude(Image *, Image *);
+Image* and(Image *, Image *);
+Image* or(Image *, Image *);
+Image* xor(Image *, Image *);
 
 #endif
